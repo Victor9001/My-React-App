@@ -1,15 +1,20 @@
-import Movie from "./Component/Movie.jsx";
+import Search from "./Component/Search.jsx";
+import {useState} from "react";
 
 
 const App = () => {
-
+    const [searchItem, setSearchItem] = useState("");
     return(
-        <div className="component">
+        <main>
+            <div className="pattern" />
+            <div className="wrapper">
 
-            <Movie titles="House Of Dragon"/>
-            <Movie titles="Attack On Titans"/>
-            <Movie titles="Dark Knight"/>
-        </div>
+                <h1 className="text-3xl text-grey">Find <span className="text-gradient">Movies</span> You'll Love Without Hassle.</h1>
+
+                <Search searchItem = {searchItem} setSearchItem ={setSearchItem} />
+                <h2>Search</h2>
+            </div>
+        </main>
     );
 }
 
