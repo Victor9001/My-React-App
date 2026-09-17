@@ -1,6 +1,7 @@
 import Search from "./Component/Search.jsx";
 import MovieCard from "./Component/MovieCard.jsx";
 import {useEffect, useState} from "react";
+import { Spinner } from "flowbite-react";
 import {useDebounce} from "react-use";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
@@ -67,6 +68,7 @@ const App = () => {
             <div className="wrapper">
 
                 <header>
+                    <img src="./hero.png" alt="hero_banner"/>
                     <h1 className="text-3xl text-grey">Find <span className="text-gradient">Movies</span> You'll Love Without Hassle.</h1>
 
                     <Search searchItem = {searchItem} setSearchItem ={setSearchItem} />
@@ -78,7 +80,7 @@ const App = () => {
                     <h2 className="mt-[40px]">All Movies</h2>
 
                     {isLoading ? (
-                        <p className="text-white">Loading.....</p>
+                        <Spinner color="warning" aria-label="Large spinner example" size="lg" />
                     ) : errorMessage ? (
                         <p className="text-red-500">{errorMessage}</p>
                     ): (
