@@ -1,4 +1,4 @@
-import {Client, Databases, Query} from "appwrite";
+import {Client, Databases, Query, ID} from "appwrite";
 import search from "./Component/Search.jsx";
 
 const PROJECT_ID = import.meta.env.VITE_APPWRITE_PROJECT_ID;
@@ -17,7 +17,10 @@ const client = new Client()
          [Query.equal('searchTerm', searchItem),
          ]);
      if(result.documents.length> 0){
-
+         const doc = result.documents[0];
+         await database.updateDocument(DATABASE_ID, COLLECTION_ID, doc.$id, {
+             count: doc.count + 1,
+         });
      }else{
 
      }
