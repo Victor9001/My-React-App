@@ -2,6 +2,7 @@ import Search from "./Component/Search.jsx";
 import MovieCard from "./Component/MovieCard.jsx";
 import {useEffect, useState} from "react";
 import {useDebounce} from "react-use";
+import { getTrendingMovies, updateSearchCount} from "./appwrite.js";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -18,6 +19,7 @@ const App = () => {
     const [searchItem, setSearchItem] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [movieList, setMovieList] = useState([]);
+    const [trendingMovie, setTrendingMovie] = useState([])
     const [isLoading, setIsLoading] = useState(false);
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
@@ -45,9 +47,9 @@ const App = () => {
 
         setMovieList(data.results || []);
 
-           // if(query && data.results.length > 0){
-           //     await updateSearchCount(query, data.results[0]);
-          //  }
+           if(query && data.results.length > 0){
+               await updateSearchCount(query, data.results[0]);
+           }
         }catch (error) {
             console.error(`Fail fetching movie: ${error}`);
             setErrorMessage("failed to fetch movies, Please try again later.");
@@ -55,11 +57,23 @@ const App = () => {
             setIsLoading(false);
         }
     }
+    const loadTrendingMovies = async () => {
+        try{
+            const movies = await getTrendingMovies();
+              setTrendingMovie(movies || [])
+        }catch(error){
+            console.error(`Error fetching trending movies${error}`);
+        }
+    }
 
 
     useEffect(() => {
         fetchMovie(debouncedSearchTerm);
     }, [debouncedSearchTerm]);
+
+    useEffect(() => {
+        loadTrendingMovies();
+    }, []);
 
     return(
         <main>
@@ -74,6 +88,20 @@ const App = () => {
 
                 </header>
 
+                {
+                    trendingMovie.length > 0  &&
+                    <section className="trending">
+                      <h2>Trending Movie</h2>
+                      <ul>
+                {trendingMovie.map((movie, index) => (
+                    <li key={movie.$id}>
+                    <p>{index + 1}</p>
+                     <img src={movie.poster_url} alt={movie.searchTerm}/>
+                    </li>
+                    ))}
+                      </ul>
+                    </section>
+                }
 
                 <section className="all-movies">
                     <h2 className="mt-[40px]">All Movies</h2>
